@@ -277,7 +277,7 @@ title('');
 
 % Save that image as _ROIsDrawn.jpg
 saveName1 = strrep(dataNameExcel{1},'.xlsx','_ROIsDrawn');
-print(figY,saveName1,'-djpeg')
+print(figY,saveName1,'-dtiffn','-r600')
 
 % Now label the ROIs, and save that image as _ROIsLabeled.jpg
 figure(figY);
@@ -291,7 +291,7 @@ for i = 1:N
     text(centroidsList(i,1),centroidsList(i,2),num2str(i),'Color','red','FontSize',14);
 end
 saveName2 = strrep(dataNameExcel{1},'.xlsx','_ROIsLabeled');
-print(figY,saveName2,'-djpeg')
+print(figY,saveName2,'-dtiffn','-r600')
 
 close(figY);
 
@@ -339,7 +339,7 @@ legend('boxoff')
 
 % Save the results as _Results.jpg
 saveName3 = strrep(dataNameExcel{1},'.xlsx','_Results');
-print(figZ,saveName3,'-djpeg')
+print(figZ,saveName3,'-dtiffn','-r600')
 figure(f)
 waitbar(1,f, 'Analyzing ROIs');
 pause(.5)

@@ -71,7 +71,8 @@ tempName2 = strrep(tempName2,' ','_');
 combinedTable.Properties.VariableNames = tempName2(1,:);
 writetable(combinedTable, file);
 xlswrite(file, {data_type}, excel_cell);
-saveas(fig2,[fileName '\LineProfileGrayImage.jpg'])
+name = [fileName '\LineProfileGrayImage.tif'];
+print(figure(fig2),name,'-dtiffn','-r600');
 
 
 % Save the line-profile results as text file

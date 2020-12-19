@@ -296,8 +296,8 @@ end
 
 % Create save name for the dominant element map
 name = char(strcat(name,'_ele%_', num2str(min_element_percentage)...
-        ,'_O%_', num2str(min_oxygen_percentage), '.jpg'));
+        ,'_O%_', num2str(min_oxygen_percentage), '.tiff'));
 
-print(figure(fig3),name,'-djpeg','-r600');
+print(figure(fig3),name,'-dtiffn','-r600');
 crop(name)
 close(fig3)

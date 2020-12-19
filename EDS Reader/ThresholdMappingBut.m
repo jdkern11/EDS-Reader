@@ -1306,13 +1306,13 @@ function ThresholdMappingBut(varargin)
         % Get waitbar to always be on top
         frames = java.awt.Frame.getFrames();
         frames(end).setAlwaysOnTop(1); 
-        pic_name = char(strcat(dirName,'\Threshold_Map.jpg'));
+        pic_name = char(strcat(dirName,'\Threshold_Map.tif'));
         xl_name = char(strcat(dirName,'\Threshold_Map.xlsx'));
         text_name = char(strcat(dirName,'\Threshold_Map.txt'));
         temp_num = 1;
         while exist(pic_name, 'file')
             number = num2str(temp_num, '%2d');
-            tempName = strcat({'\'}, 'Threshold_Map',{'('}, number, {')'},'.jpg');
+            tempName = strcat({'\'}, 'Threshold_Map',{'('}, number, {')'},'.tif');
             tempName2 = strcat({'\'}, 'Threshold_Map',{'('}, number, {')'},'.xlsx');
             tempName3 = strcat({'\'}, 'Threshold_Map',{'('}, number, {')'},'.txt');
             tempName = strjoin(tempName);
@@ -1517,7 +1517,7 @@ function ThresholdMappingBut(varargin)
         fclose(fid);
         
         % save pic
-        print(figure(fig3),pic_name,'-djpeg','-r600');
+        print(figure(fig3),pic_name,'-dtiffn','-r600');
         crop(pic_name)
         bar_len = bar_len + .1; %go to 1
         waitbar(bar_len,f, 'Saving Threshold Data','WindowStyle', 'modal');

@@ -43,7 +43,7 @@ if isstruct(filename) %assuming it is a struct as produced from DIR
 elseif isdir(filename) %if the input is a directory, get all the image files from the directory
     currentdir=pwd;
     cd (filename)
-    files=[dir('*.png'); dir('*.gif'); dir('*.bmp'); dir('*.jpg')];
+    files=[dir('*.png'); dir('*.gif'); dir('*.bmp'); dir('*.jpg'); dir('*tif')];
 else %if it is a single file:
     files.name=filename;
 end
@@ -56,7 +56,7 @@ for n=1:length(files)
     info=imfinfo(filename);
     
     %get the image
-    if strcmp(info.Format,'png') %if it has transparent pixels
+    if strcmp(info.Format,'tiff') %if it has transparent pixels
         T=imread(filename,'backgroundcolor',[1 1 1]); %backgroundcolor makes transparent pixels white, so they don't affect cropping.
     else
         T=imread(filename);

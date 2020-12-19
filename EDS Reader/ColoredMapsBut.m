@@ -68,6 +68,13 @@ dirName = strcat(pathName, '\ColoredMaps_', char(data_type));
 if ~(exist(dirName, 'dir'))
     mkdir(dirName)
 end
+
+% Create new greyscale directory for the colorMaps
+greyDirName = strcat(dirName, '\GreyScale');
+if ~(exist(greyDirName, 'dir'))
+    mkdir(greyDirName)
+end
+
 dlgTitle    = 'User Question';
 dlgQuestion = 'Do you wish to create colored maps';
 choice = questdlg(dlgQuestion,dlgTitle,'Yes','No', 'Yes');
@@ -218,7 +225,7 @@ for i = 1:length(nameMatrix)
         axis equal
         axis off
         drawnow
-        name = char(strcat(mapNames(1,i), '.jpg'));
+        name = char(strcat(mapNames(1,i), '.tif'));
         colormap(colorMap);
         %alter to horizontal
         cb = colorbar(gca, 'horizontal', 'location', 'southoutside'); % creat a colorbar
@@ -235,8 +242,8 @@ for i = 1:length(nameMatrix)
         set(titleLabel, 'Position', [y/2 2 1]); 
         drawnow
         pause(0.01)
-    %     saveas(figure(fig2), name); % save the map
-        print(figure(fig2),name,'-djpeg','-r600');
+        
+        print(figure(fig2),name,'-dtiffn','-r600');
         crop(name)
         hold off
     end
@@ -323,8 +330,8 @@ for k = 1:length(indx)
    name = char(strcat(name, '_', legendNameMatrix(k,1)));
 end
 name = char(strcat(name, '_threshold ', num2str(min_intensity), '%'));
-name = char(strcat(name, '.jpg'));
+name = char(strcat(name, '.tif'));
 
-print(figure(fig3),name,'-djpeg','-r600');
+print(figure(fig3),name,'-dtiffn','-r600');
 crop(name)
 close(fig3)
