@@ -87,7 +87,9 @@ y = size(matrixEDSData,2);
 
 %create a matrix that has a color array in positions 1-3
 colorImage = zeros(x, y, 3);
+greyColorImage = zeros(x, y, 3);
 mapNames = strings(1, length(nameMatrix));
+greyMapNames = strings(1, length(nameMatrix));
 
 %%% For the combined map, determine which element is dominant at each pixel
 % Matrix to store the element with the largest intensity for each pixel
@@ -171,9 +173,10 @@ for i = 1:length(nameMatrix)
     maxIntensityInd = find(D2>=0.995,1); % determine the index of the intensity that is 99.5% of the max
     maxIntensity = d(maxIntensityInd); % retrieve that intensity
     maxIntensity = ceil(maxIntensity/5)*5; % round maxIntensity up to the nearest multiple of 5
-
+    
     
     mapNames(1,i) = strcat(dirName, '\', nameMatrix(i,1));
+    greyMapNames(1,i) = strcat(greyDirName, '\', nameMatrix(i,1));
     % Create colorImage, where colorImage is a 3D RGB matrix. Note that all
     % intensity values that are equal to maxIntensity will be normalized to
     % 1, and any intensity values greater than maxIntensity (i.e., the top 
@@ -182,9 +185,14 @@ for i = 1:length(nameMatrix)
     colorImage(:,:,2) = EDSmap*colorList(i,2)/(maxIntensity*cf);
     colorImage(:,:,3) = EDSmap*colorList(i,3)/(maxIntensity*cf);
     
+    greyColorImage(:,:,1) = EDSmap/(maxIntensity*cf);
+    greyColorImage(:,:,2) = EDSmap/(maxIntensity*cf);
+    greyColorImage(:,:,3) = EDSmap/(maxIntensity*cf);
+    
     % Now set the top 0.5% of the intensity values == 1
     onesInds = find(colorImage > 1); % find all values in colorImage that are > 1
-    colorImage(onesInds) = 1; % set the values in onesInds == 1
+    colorImage(onesInds) = 1; % set the values in onesInds == 1   
+    greyColorImage(onesInds) = 1;
     
     % Find all pixel locations where the present element is dominant
     [map_loc_rows, map_loc_cols] = find(max_intensity_loc == i);
@@ -196,10 +204,10 @@ for i = 1:length(nameMatrix)
             combinedImage(map_loc_rows(j), map_loc_cols(j),3) = colorImage(map_loc_rows(j), map_loc_cols(j),3);
         end
     end
-    
 
     % Creat a colormap for the colorbar, which ranges from 0 -- > colorList(i,:)
     colorMap = [linspace(0,colorList(i,1),100)' linspace(0,colorList(i,2),100)' linspace(0,colorList(i,3),100)'];
+    greyColorMap = [linspace(0,1)' linspace(0,1)' linspace(0,1)'];
     if (ismember(i, color_member_indices))
         if (combined_start == 0)
             combined_color_map(1:100,:) = colorMap;
@@ -212,7 +220,6 @@ for i = 1:length(nameMatrix)
             combined_color_map_max_intensity(combined_start) = maxIntensity;
         end
     end
-        
 
     if (~dont_write_maps)
         %Plot the map and save
@@ -242,9 +249,40 @@ for i = 1:length(nameMatrix)
         set(titleLabel, 'Position', [y/2 2 1]); 
         drawnow
         pause(0.01)
-        
         print(figure(fig2),name,'-dtiffn','-r600');
         crop(name)
+        hold off
+        
+        
+         %Plot the map and save
+        figure(fig2);
+        cla
+        image(greyColorImage)
+        hold on
+        xlim([0 y])
+        ylim([0 x])
+        axis equal
+        axis off
+        drawnow
+        name2 = char(strcat(greyMapNames(1,i), '.tif'));
+        colormap(greyColorMap);
+        %alter to horizontal
+        cb = colorbar(gca, 'horizontal', 'location', 'southoutside'); % creat a colorbar
+        cbPos = cb.Position; % get the position of the color bar
+        mid = (pos(1) + pos(3)) / 3.66;
+        set(cb,'Position',[mid pos(2)+.025 cbPos(3) cbPos(4)/2])%[x/5 y/5 cbPos(3) cbPos(4)/2]) % move the color bar to the side and shrink it
+        caxis([0 maxIntensity]) % set the range of the colorbar
+        xlabel(cb,data_type, 'fontsize', 24);
+        %cbLabel = xlabel(cb,'at. %', 'fontsize', 18); % add a label to the colorbar
+        %cbLabelPos = cbLabel.Position; % get the position of the colorbar label
+        %set(cbLabel,'Position',[cbLabelPos(1) 10 cbLabelPos(3)]);%,'Rotation',270); % move and rotate the colorbar label
+        % Increase fontsize and change title position
+        titleLabel = title(nameMatrix(i,1), 'fontsize', 18);
+        set(titleLabel, 'Position', [y/2 2 1]); 
+        drawnow
+        pause(0.01)      
+        print(figure(fig2),name2,'-dtiffn','-r600');
+        crop(name2)
         hold off
     end
     
