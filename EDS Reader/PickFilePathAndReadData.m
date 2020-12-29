@@ -107,6 +107,9 @@ pixelSize = data{1,3}; %nm or microns
 pixelUnit = data{1,4};
 if(strcmp(pixelUnit, 'nm'))
     pixelSize = pixelSize/1000;
+else
+    warndlg('Pixel Unit From Row 4, Column 2 of the header not understood.','Warning')
+    return
 end
 
 %1D matrix to hold names of the material
