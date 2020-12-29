@@ -95,23 +95,21 @@ waitbar(bar_len,f, 'Loading CSV data');
 bar_len = .2;
 set(0, 'currentfigure', fig1);
 %Read the data range for the CSV files
-xRange = csvread(datafile,1,1,'B2..B2');
-yRange = csvread(datafile,2,1,'B3..B3');
-% read pixel in nm or microns
 fid = fopen(datafile);
-data = textscan(fid, '%s %s %f %s', 'HeaderLines', 3);
+data = textscan(fid, '%s %s', 4, 'Delimiter', ',');
 fclose(fid);
-% pixelText = fileread(datafile,3,1,'B4..B4');
-% pixelSize = csvread(datafile,3,1,'B4..B4'); % nanometers
-pixelSize = data{1,3}; %nm or microns
-pixelUnit = data{1,4};
+xRange = str2num(['int32(' data{2}{2} ')']);
+yRange = str2num(['int32(' data{2}{3} ')']);
+pixelInfo = data{2}{4};
+pixelInfo = strsplit(pixelInfo,' ');
+pixelSize = str2double(pixelInfo{1});
+pixelUnit = pixelInfo{2};
 if(strcmp(pixelUnit, 'nm'))
     pixelSize = pixelSize/1000;
 else
     warndlg('Pixel Unit From Row 4, Column 2 of the header not understood.','Warning')
     return
 end
-
 %1D matrix to hold names of the material
 nameMatrix = strings(length(listing)-1,1) ;                                
 %3D matrix to hold all information
